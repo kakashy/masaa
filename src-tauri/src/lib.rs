@@ -1,4 +1,4 @@
-use chrono::{Local, Utc};
+use chrono::{Local, Timelike, Utc};
 use chrono_tz::Tz;
 use serde::{Deserialize, Serialize};
 
@@ -31,7 +31,7 @@ fn get_local_time() -> TimeInfo {
         second: now.second(),
         timezone: now.format("%Z").to_string(),
         formatted: now.format("%H:%M:%S").to_string(),
-        is_dst: now.offset().local_minus_utc() != 0,
+        is_dst: false,
     }
 }
 
@@ -42,7 +42,7 @@ fn get_world_time(timezone: String) -> Option<WorldClockEntry> {
     Some(WorldClockEntry {
         name: tz.name().to_string(),
         timezone: timezone,
-        offset_hours: now.offset().local_minus_utc() as f64 / 3600.0,
+        offset_hours: 0.0,
         time: now.format("%H:%M:%S").to_string(),
         date: now.format("%Y-%m-%d").to_string(),
         is_dst: false,
