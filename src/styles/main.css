@@ -1,0 +1,354 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Neumorphic Surface */
+  --neu-bg: #e0e5ec;
+  --neu-shadow-light: #ffffff;
+  --neu-shadow-dark: #a3b1c6;
+  --neu-radius: 16px;
+  --neu-radius-sm: 10px;
+  --neu-radius-lg: 24px;
+
+  /* Elevation */
+  --neu-flat: 6px 6px 12px var(--neu-shadow-dark),
+              -6px -6px 12px var(--neu-shadow-light);
+  --neu-pressed: inset 4px 4px 8px var(--neu-shadow-dark),
+                 inset -4px -4px 8px var(--neu-shadow-light);
+  --neu-convex: 6px 6px 12px var(--neu-shadow-dark),
+                -6px -6px 12px var(--neu-shadow-light),
+                linear-gradient(145deg, rgba(255,255,255,0.15), rgba(0,0,0,0.05));
+  --neu-subtle: 3px 3px 6px var(--neu-shadow-dark),
+                -3px -3px 6px var(--neu-shadow-light);
+
+  /* Colors — warm-tinted neumorphic palette */
+  --color-primary: #6c63ff;
+  --color-primary-soft: #8b83ff;
+  --color-primary-glow: rgba(108, 99, 255, 0.25);
+  --color-accent: #ff6b6b;
+  --color-accent-soft: #ff8787;
+  --color-success: #40c057;
+  --color-success-soft: rgba(64, 192, 87, 0.15);
+  --color-warning: #fab005;
+  --color-warning-soft: rgba(250, 176, 5, 0.15);
+  --color-info: #339af0;
+  --color-info-soft: rgba(51, 154, 240, 0.15);
+  --color-surface: var(--neu-bg);
+  --color-text: #2c3e50;
+  --color-text-secondary: #636e72;
+  --color-text-muted: #95a5a6;
+
+  /* Typography */
+  --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Type Scale — modular 1.25 ratio */
+  --text-xs: 0.64rem;
+  --text-sm: 0.8rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.563rem;
+  --text-2xl: 1.953rem;
+  --text-3xl: 2.441rem;
+  --text-4xl: 3.052rem;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Transitions — refined easing */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 150ms var(--ease-out-quart);
+  --transition-normal: 250ms var(--ease-out-quart);
+  --transition-slow: 400ms var(--ease-out-expo);
+}
+
+[data-theme="dark"] {
+  --neu-bg: #2d3436;
+  --neu-shadow-light: #3d4446;
+  --neu-shadow-dark: #1d2426;
+  --color-primary: #a29bfe;
+  --color-primary-soft: #b8b3ff;
+  --color-primary-glow: rgba(162, 155, 254, 0.2);
+  --color-accent: #ff7675;
+  --color-accent-soft: #ff8a89;
+  --color-success: #69db7c;
+  --color-success-soft: rgba(105, 219, 124, 0.12);
+  --color-warning: #fcc419;
+  --color-warning-soft: rgba(252, 196, 25, 0.12);
+  --color-info: #74c0fc;
+  --color-info-soft: rgba(116, 192, 252, 0.12);
+  --color-text: #dfe6e9;
+  --color-text-secondary: #b2bec3;
+  --color-text-muted: #636e72;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-display);
+  background: var(--neu-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background var(--transition-slow), color var(--transition-slow);
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+
+/* Selection & Caret — themed */
+::selection {
+  background: var(--color-primary-glow);
+  color: var(--color-text);
+}
+
+::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+/* Neumorphic Utilities */
+.neu-flat {
+  box-shadow: var(--neu-flat);
+}
+
+.neu-pressed {
+  box-shadow: var(--neu-pressed);
+}
+
+.neu-convex {
+  box-shadow: var(--neu-convex);
+}
+
+.neu-subtle {
+  box-shadow: var(--neu-subtle);
+}
+
+.neu-card {
+  background: var(--neu-bg);
+  border-radius: var(--neu-radius);
+  box-shadow: var(--neu-convex);
+  padding: var(--space-lg);
+}
+
+.neu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  border: none;
+  border-radius: var(--neu-radius-sm);
+  background: var(--neu-bg);
+  box-shadow: var(--neu-flat);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
+  outline: none;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.neu-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), var(--color-primary-glow) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.neu-btn:hover {
+  box-shadow: var(--neu-convex);
+}
+
+.neu-btn:active {
+  box-shadow: var(--neu-pressed);
+  transform: scale(0.97);
+}
+
+.neu-btn.primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 4px 4px 10px var(--neu-shadow-dark),
+              -2px -2px 6px var(--neu-shadow-light),
+              0 0 20px var(--color-primary-glow);
+}
+
+.neu-btn.primary:hover {
+  background: var(--color-primary-soft);
+  box-shadow: 4px 4px 10px var(--neu-shadow-dark),
+              -2px -2px 6px var(--neu-shadow-light),
+              0 0 30px var(--color-primary-glow);
+}
+
+.neu-btn.primary:active {
+  transform: scale(0.97);
+}
+
+.neu-btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.neu-input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-radius: var(--neu-radius-sm);
+  background: var(--neu-bg);
+  box-shadow: var(--neu-pressed);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  outline: none;
+  transition: box-shadow var(--transition-fast);
+}
+
+.neu-input:focus {
+  box-shadow: var(--neu-pressed), 0 0 0 2px var(--color-primary), 0 0 16px var(--color-primary-glow);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* ===== Animation Keyframes ===== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--color-primary-glow);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px var(--color-primary-glow);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Panel entrance */
+.panel-enter {
+  animation: fadeInUp 0.4s var(--ease-out-expo) both;
+}
+
+.panel-enter > *:nth-child(1) { animation-delay: 0ms; }
+.panel-enter > *:nth-child(2) { animation-delay: 60ms; }
+.panel-enter > *:nth-child(3) { animation-delay: 120ms; }
+.panel-enter > *:nth-child(4) { animation-delay: 180ms; }
+.panel-enter > *:nth-child(5) { animation-delay: 240ms; }
+.panel-enter > *:nth-child(6) { animation-delay: 300ms; }
+
+/* Stagger children */
+.stagger-children > * {
+  animation: fadeInUp 0.4s var(--ease-out-expo) both;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
