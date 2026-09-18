@@ -80,6 +80,34 @@
       </div>
 
       <div class="setting-group panel-enter" style="animation-delay: 0.2s">
+        <h3>System</h3>
+        <div class="setting-item neu-card">
+          <div class="setting-label">
+            <span class="setting-name">Start on Login</span>
+            <span class="setting-desc">Launch Masaa when you log in</span>
+          </div>
+          <button
+            class="toggle-btn"
+            :class="{ active: autoStart }"
+            @click="toggleAutoStart"
+          >
+            <div class="toggle-track">
+              <div class="toggle-thumb" />
+            </div>
+          </button>
+        </div>
+        <div class="setting-item neu-card">
+          <div class="setting-label">
+            <span class="setting-name">Close Action</span>
+            <span class="setting-desc">{{ closeActionLabel }}</span>
+          </div>
+          <button class="neu-btn reset-btn" @click="resetCloseAction" v-if="hasClosePreference">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <div class="setting-group panel-enter" style="animation-delay: 0.25s">
         <h3>About</h3>
         <div class="setting-item neu-card about-card">
           <div class="about-logo">
@@ -98,7 +126,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useDaylight } from '../../composables/useDaylight'
 
 const { mode: themeMode, brightnessMode, setMode } = useDaylight()
@@ -106,6 +134,42 @@ const { mode: themeMode, brightnessMode, setMode } = useDaylight()
 const clockFormat = ref(localStorage.getItem('masaa_clock_format') || '24')
 const showSeconds = ref(localStorage.getItem('masaa_show_seconds') !== 'false')
 const snoozeDuration = ref(localStorage.getItem('masaa_snooze_duration') || '5')
+const autoStart = ref(false)
+const closeAction = ref(localStorage.getItem('masaa_close_action') || '')
+
+const hasClosePreference = computed(() => !!closeAction.value)
+const closeActionLabel = computed(() => {
+  if (closeAction.value === 'minimize') return 'Always minimize to tray'
+  if (closeAction.value === 'quit') return 'Always quit completely'
+  return 'Ask each time'
+})
+
+function resetCloseAction() {
+  closeAction.value = ''
+  localStorage.removeItem('masaa_close_action')
+}
+
+async function toggleAutoStart() {
+  try {
+    const { invoke } = await import('@tauri-apps/api/tauri')
+    if (autoStart.value) {
+      await invoke('plugin:autostart|disable')
+      autoStart.value = false
+    } else {
+      await invoke('plugin:autostart|enable')
+      autoStart.value = true
+    }
+  } catch {}
+}
+
+async function checkAutoStart() {
+  try {
+    const { invoke } = await import('@tauri-apps/api/tauri')
+    autoStart.value = await invoke('plugin:autostart|is_enabled')
+  } catch {}
+}
+
+checkAutoStart()
 
 function saveSetting(key, value) {
   localStorage.setItem(`masaa_${key}`, value)
@@ -248,5 +312,11 @@ function saveSetting(key, value) {
 .about-desc {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
+}
+
+.reset-btn {
+  font-size: var(--text-xs);
+  padding: var(--space-xs) var(--space-md);
+  color: var(--color-accent);
 }
 </style>

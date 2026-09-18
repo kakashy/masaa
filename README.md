@@ -1,6 +1,8 @@
 # Masaa
 
-A beautiful, native Linux desktop clock application built with Tauri 2, Vue 3, and Vite.
+A beautiful, native Linux desktop clock application built with Tauri 1, Vue 3, and Vite.
+
+![alt text](image.png)
 
 ## Features
 

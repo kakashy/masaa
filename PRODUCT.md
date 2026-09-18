@@ -9,6 +9,7 @@ adaptive (Linux-native desktop app via Tauri, with web-technologies UI that adap
 ## Users
 
 Linux desktop users who need a reliable, beautiful clock application. Primary use cases:
+
 - Remote workers tracking multiple timezones across teams
 - Developers who need quick time reference during work
 - Anyone wanting a glanceable desktop clock with alarm, timer, and stopwatch functionality
@@ -39,7 +40,6 @@ Masaa combines a premium neumorphic soft UI with true Linux-native integration (
 
 ## Brand Commitments
 
-- **Name:** Masaa (مساء) — meaning "evening" in Arabic, evoking the calm transition of day into night
 - **Voice:** Calm, precise, unobtrusive — the app should feel like a quiet, reliable companion
 - **Visual identity:** Neumorphic soft UI — soft shadows, subtle extrusion, rounded shapes, tactile feel
 - **Design language:** Inspired by physical objects — buttons that feel pressable, surfaces that feel tangible
