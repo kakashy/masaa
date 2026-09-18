@@ -24,6 +24,43 @@
         <span class="nav-label">{{ tab.label }}</span>
       </button>
     </nav>
+
+    <!-- Close Confirmation Dialog -->
+    <Transition name="trigger">
+      <div v-if="showCloseDialog" class="close-dialog-overlay" @click.self="cancelClose">
+        <div class="close-dialog neu-card">
+          <div class="close-dialog-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+            </svg>
+          </div>
+          <div class="close-dialog-title">Close Masaa?</div>
+          <div class="close-dialog-desc">Would you like to minimize to tray or quit completely?</div>
+          <div class="close-dialog-actions">
+            <button class="neu-btn" @click="handleClose('minimize')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Minimize to Tray
+            </button>
+            <button class="neu-btn danger" @click="handleClose('quit')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Quit
+            </button>
+          </div>
+          <label class="close-dialog-remember">
+            <input type="checkbox" v-model="rememberChoice" />
+            <span>Remember my choice</span>
+          </label>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -42,6 +79,9 @@ const { theme, initTheme } = useDaylight()
 const { checkAlarms } = useAlarm()
 
 const activeTab = ref('clock')
+const showCloseDialog = ref(false)
+const rememberChoice = ref(false)
+let pendingClose = false
 
 const tabs = [
   {
@@ -85,11 +125,48 @@ function switchTab(id) {
   activeTab.value = id
 }
 
+function cancelClose() {
+  showCloseDialog.value = false
+}
+
+async function handleClose(action) {
+  if (rememberChoice.value) {
+    localStorage.setItem('masaa_close_action', action)
+  }
+  showCloseDialog.value = false
+  if (action === 'quit') {
+    const { invoke } = await import('@tauri-apps/api/tauri')
+    await invoke('plugin:autostart|is_enabled')
+    const { appWindow } = await import('@tauri-apps/api/window')
+    await appWindow.close()
+  } else {
+    const { appWindow } = await import('@tauri-apps/api/window')
+    await appWindow.hide()
+  }
+}
+
+async function setupCloseHandler() {
+  const { appWindow } = await import('@tauri-apps/api/window')
+  appWindow.listen('tauri://close-requested', async () => {
+    const saved = localStorage.getItem('masaa_close_action')
+    if (saved) {
+      if (saved === 'quit') {
+        await appWindow.close()
+      } else {
+        await appWindow.hide()
+      }
+    } else {
+      showCloseDialog.value = true
+    }
+  })
+}
+
 let alarmInterval = null
 
 onMounted(() => {
   initTheme()
   alarmInterval = setInterval(checkAlarms, 10000)
+  setupCloseHandler()
 })
 
 onUnmounted(() => {
@@ -214,5 +291,89 @@ onUnmounted(() => {
   font-size: var(--text-xs);
   font-weight: 500;
   letter-spacing: 0.02em;
+}
+
+/* Close Dialog */
+.close-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.close-dialog {
+  text-align: center;
+  padding: var(--space-xl) var(--space-2xl);
+  min-width: 320px;
+  max-width: 380px;
+}
+
+.close-dialog-icon {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.close-dialog-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.close-dialog-desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+.close-dialog-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  margin-bottom: var(--space-lg);
+}
+
+.close-dialog-remember {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.close-dialog-remember input[type="checkbox"] {
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.danger {
+  color: var(--color-accent);
+}
+
+/* Reuse trigger transition for close dialog */
+.trigger-enter-active {
+  animation: triggerIn 0.3s var(--ease-out-expo);
+}
+.trigger-leave-active {
+  animation: triggerIn 0.2s var(--ease-out-quart) reverse;
+}
+@keyframes triggerIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(6px);
+  }
 }
 </style>

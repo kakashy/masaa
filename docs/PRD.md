@@ -4,8 +4,6 @@
 
 Masaa is a Linux-native desktop clock application built with Tauri and Vue 3. It provides quick time preview, world timezone comparison, smart daylight adjustments, alarms with custom tones, a timer, and a stopwatch — all wrapped in a beautiful Neumorphic Soft UI.
 
-**"Masaa"** (مساء) means "evening" in Arabic, evoking the calming transition of day into night — fitting for a clock app that gracefully adapts to the passage of time.
-
 ---
 
 ## Goals
@@ -90,15 +88,15 @@ Masaa is a Linux-native desktop clock application built with Tauri and Vue 3. It
 
 ## Technical Requirements
 
-| Component | Technology |
-|---|---|
-| Desktop runtime | Tauri 2 |
-| Frontend | Vue 3 + Vite |
-| Language | TypeScript (composables), Rust (Tauri backend) |
-| State management | Pinia (or reactive composables) |
-| Date/time | `chrono` (Rust), `date-fns` or native `Intl.DateTimeFormat` (JS) |
-| Audio playback | `@tauri-apps/api` or HTML5 Audio API |
-| Packaging | deb + AppImage |
+| Component        | Technology                                                       |
+| ---------------- | ---------------------------------------------------------------- |
+| Desktop runtime  | Tauri 2                                                          |
+| Frontend         | Vue 3 + Vite                                                     |
+| Language         | TypeScript (composables), Rust (Tauri backend)                   |
+| State management | Pinia (or reactive composables)                                  |
+| Date/time        | `chrono` (Rust), `date-fns` or native `Intl.DateTimeFormat` (JS) |
+| Audio playback   | `@tauri-apps/api` or HTML5 Audio API                             |
+| Packaging        | deb + AppImage                                                   |
 
 ---
 

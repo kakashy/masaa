@@ -1,5 +1,12 @@
 import { ref, computed } from 'vue'
 
+async function sendDesktopNotification(title, body) {
+  try {
+    const { invoke } = await import('@tauri-apps/api/tauri')
+    await invoke('send_notification', { title, body })
+  } catch {}
+}
+
 export function useTimer() {
   const storageKey = 'masaa_timers'
   const timers = ref([])
@@ -32,8 +39,8 @@ export function useTimer() {
         timer.isRunning = false
         timer.isFinished = true
         clearInterval(timer.intervalId)
-        // Play completion sound
         playCompletionSound()
+        sendDesktopNotification('Masaa Timer', 'Your timer has finished!')
       }
     }, 100)
   }
@@ -61,19 +68,21 @@ export function useTimer() {
   }
 
   function playCompletionSound() {
-    // Use Web Audio API for a gentle completion tone
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)()
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.connect(gain)
-      gain.connect(ctx.destination)
-      osc.frequency.value = 800
-      osc.type = 'sine'
-      gain.gain.value = 0.3
-      osc.start()
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5)
-      osc.stop(ctx.currentTime + 1.5)
+      const notes = [800, 1000, 1200, 1000]
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        const t = ctx.currentTime + i * 0.2
+        gain.gain.setValueAtTime(0.3, t)
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2)
+        osc.connect(gain).connect(ctx.destination)
+        osc.start(t)
+        osc.stop(t + 0.25)
+      })
     } catch {}
   }
 
